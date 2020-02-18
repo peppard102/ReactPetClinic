@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import { Trips } from './Trips';
+import { Trips } from './AllAppointments';
 
 export class Update extends Component {
     constructor(props) {
@@ -60,7 +60,7 @@ export class Update extends Component {
 
     onUpdateCancel() {
         const {history} = this.props; // Same as writing: const history = this.props.history
-        history.push('/trips');
+        history.push('/allAppointments');
     }
 
     onSubmit(e) {
@@ -76,7 +76,7 @@ export class Update extends Component {
         }
 
         axios.put("api/Trips/UpdateTrip/" + id, tripObject).then(result => {
-            history.push('/trips');
+            history.push('/allAppointments');
         });
     }
 

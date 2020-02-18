@@ -56,7 +56,7 @@ export class Create extends Component {
         }
 
         axios.post("api/Trips/AddTrip", tripObject).then(result => {
-            history.push('/trips');
+            history.push('/allAppointments');
         });
     }
 

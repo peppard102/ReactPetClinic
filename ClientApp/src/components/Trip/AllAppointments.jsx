@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 
-export class Trips extends Component
+export class AllAppointments extends Component
 {
     constructor(props){
         super(props);
@@ -98,10 +98,10 @@ export class Trips extends Component
         return (
             <div>
                 <h1>
-                    All Trips
+                    All Appointments
                 </h1>
                 <p>
-                    Here you can see all the trips.
+                    Here are all of the appointments scheduled at this clinic.
                 </p>
                 {content}
             </div>

@@ -31,7 +31,7 @@ export class Delete extends Component {
 
     onCancel(e) {
         const {history} = this.props;
-        history.push('/trips');
+        history.push('/allAppointments');
     }
 
     onConfirmation(e) {
@@ -39,7 +39,7 @@ export class Delete extends Component {
         const {history} = this.props;
         
         axios.delete("api/Trips/DeleteTrip/" + id).then(result => {
-            history.push('/trips');
+            history.push('/allAppointments');
         })
     }
 
