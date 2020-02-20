@@ -37,6 +37,7 @@ namespace React_Pet_Clinic
             services.AddTransient<ITripService, TripService>();
             services.AddTransient<IAppointmentService, AppointmentService>();
             services.AddTransient<IPetService, PetService>();
+            services.AddTransient<IVetService, VetService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
