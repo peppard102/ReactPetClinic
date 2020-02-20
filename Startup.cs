@@ -5,7 +5,10 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Trips.Data;
+using ReactPetClinic.Data;
+using System.Data;
+using System.Data.SqlClient;
+using System;
 
 namespace React_Pet_Clinic
 {
@@ -30,7 +33,10 @@ namespace React_Pet_Clinic
                 configuration.RootPath = "ClientApp/build";
             });
 
+            services.AddScoped<IDbConnection, SqlConnection>(ctx => new SqlConnection(Environment.GetEnvironmentVariable("PetClinicConnectionString")));
             services.AddTransient<ITripService, TripService>();
+            services.AddTransient<IAppointmentService, AppointmentService>();
+            services.AddTransient<IPetService, PetService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

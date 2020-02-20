@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Trips.Data 
+namespace ReactPetClinic.Data
 {
     public static class Data
     {

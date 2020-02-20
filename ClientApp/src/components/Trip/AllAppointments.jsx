@@ -10,7 +10,7 @@ export class AllAppointments extends Component
         this.onTripDelete = this.onTripDelete.bind(this);
 
         this.state = {
-            trips: [],
+            appointments: [],
             loading: true,
             failed: false,
             error: ''
@@ -32,40 +32,42 @@ export class AllAppointments extends Component
     }
 
     populateTripsData() {
-        axios.get("api/trips/GetTrips").then(result => {
+        axios.get("api/Appointment/GetAppointmentGrid").then(result => {
             const response = result.data;
-            this.setState({trips: response, loading: false, failed: false, error: ''});
+            this.setState({appointments: response, loading: false, failed: false, error: ''});
         }).catch(error => {
-            this.setState({trips: [], loading: false, failed: true, error: 'Trips could not be loaded'});
+            this.setState({appointments: [], loading: false, failed: true, error: 'Appointments could not be loaded'});
         })
     }
 
-    renderAllTripsTable(trips) {
+    renderAllAppointmentsTable(appointments) {
         return (
             <table className="table table-striped"> 
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Date Started</th>
-                        <th>Date Completed</th>
+                        <th>Vet First Name</th>
+                        <th>Vet Last Name</th>
+                        <th>Pet Name</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     {
-                        trips.map(trip => (
-                            <tr key={trip.id}>
-                                <td>{trip.name}</td>
-                                <td>{trip.description}</td>
-                                <td>{new Date(trip.dateStarted).toISOString().slice(0, 10)}</td>
-                                <td>{trip.dateCompleted ? new Date(trip.dateCompleted).toISOString().slice(0, 10) : '-'}</td>
+                        appointments.map(appointment => (
+                            <tr key={appointment.id}>
+                                <td>{appointment.vetFirstName}</td>
+                                <td>{appointment.vetLastName}</td>
+                                <td>{appointment.petName}</td>
+                                <td>{new Date(appointment.startTime).toLocaleTimeString()}</td>
+                                <td>{new Date(appointment.endTime).toLocaleString()}</td>
                                 <td>
                                     <div className="form-group">
-                                        <button onClick={() => this.onTripUpdate(trip.id)} className="btn btn-success">
+                                        <button onClick={() => this.onTripUpdate(appointment.id)} className="btn btn-success">
                                             Update
                                         </button>
-                                        <button onClick={() => this.onTripDelete(trip.id)} className="btn btn-danger">
+                                        <button onClick={() => this.onTripDelete(appointment.id)} className="btn btn-danger">
                                             Delete
                                         </button>
                                     </div>
@@ -92,7 +94,7 @@ export class AllAppointments extends Component
                 </em>
             </div>
         ) : (
-            this.renderAllTripsTable(this.state.trips))
+            this.renderAllAppointmentsTable(this.state.appointments))
         )
 
         return (

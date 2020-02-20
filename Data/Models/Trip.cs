@@ -1,6 +1,6 @@
 using System;
 
-namespace Trips.Data
+namespace ReactPetClinic.Data
 {
     public class Trip
     {

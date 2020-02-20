@@ -9,11 +9,11 @@ using Microsoft.Extensions.Configuration;
 
 namespace ReactPetClinic.Data
 {
-    public class TripService : ITripService
+    public class AppointmentService : IAppointmentService
     {
         private readonly IDbConnection _db;
 
-        public TripService(IDbConnection db)
+        public AppointmentService(IDbConnection db)
         {
             _db = db;
         }
@@ -23,7 +23,7 @@ namespace ReactPetClinic.Data
 
             return _db.Get<Appointment>(id);
         }
-        public List<Appointment> GetAll()
+        public List<Appointment> GetAllAppointments()
         {
 
             return _db.GetAll<Appointment>().ToList();
