@@ -43,7 +43,7 @@ namespace ReactPetClinic.Data
 
         public List<TimeSpan> GetAppointmentTimeOptions(AppointmentLengthParams appointment)
         {
-            return _db.Query<TimeSpan>("up_GetAvailableTimes", new { VetId = appointment.VetId, Date = appointment.Date, lengthOfAppt = appointment.lengthOfAppt },
+            return _db.Query<TimeSpan>("up_GetAvailableTimes", new { VetId = appointment.VetId, Date = appointment.Date, lengthOfAppt = appointment.LengthOfAppt },
                 commandType: CommandType.StoredProcedure).ToList();
         }
 

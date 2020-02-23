@@ -48,9 +48,14 @@ namespace ReactPetClinic.Controllers
         }
         
         [HttpPost("[action]")]
-        public List<TimeSpan> GetAppointmentTimeOptions([FromBody]AppointmentLengthParams apptLengthParams)
+        public List<string> GetAppointmentTimeOptions([FromBody]AppointmentLengthParams apptLengthParams)
         {
-            return _service.GetAppointmentTimeOptions(apptLengthParams);
+            apptLengthParams.Date = apptLengthParams.Date.ToLocalTime();
+            var appts =  _service.GetAppointmentTimeOptions(apptLengthParams);
+            List<string> timeStrings = new List<string>();
+            foreach(TimeSpan appt in appts)
+                timeStrings.Add(appt.ToString());
+            return timeStrings;
         }
 
         // POST: api/Appointment

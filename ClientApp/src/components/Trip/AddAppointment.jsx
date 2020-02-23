@@ -5,6 +5,10 @@ import "react-datepicker/dist/react-datepicker.css";
 import moment from 'moment';
 import { FormGroup, Label } from 'reactstrap';
 import Select from 'react-select';
+import { addDays, toDate, getDay } from 'date-fns';
+
+const sunday = 0;
+const saturday = 6;
 
 export class AddAppointment extends Component {
     constructor(props) {
@@ -46,6 +50,10 @@ export class AddAppointment extends Component {
 
     onChangeApptLength = apptLength => {
         this.setState({ apptLength });
+    };
+
+    onChangeApptTime = apptTime => {
+        this.setState({ apptTime });
     };
 
     setStartDate = date => {
@@ -96,13 +104,25 @@ export class AddAppointment extends Component {
                             apptLength: self.state.apptLengthOptions[0]
                         });
 
-                    return axios.post('/api/Appointment/GetAppointmentTimeOptions', { VetId: self.state.vet, Date: self.state.date, LengthOfAppt: self.state.apptLength });
-                })).then(result => {
-                    self.state.apptTimeOptions = result.data.map((item) => { return { value: item, text: item } });
-                    self.state.apptTimeOptions.unshift({ value: null, text: 'Please select an option' });
+                        let tripObject = {
+                            VetId: self.state.vet.value, 
+                            Date: self.state.apptDate, 
+                            LengthOfAppt: self.state.apptLength.value
+                        }
 
-                    if (self.state.apptTimeOptions.length != 0)
-                        self.state.apptTime = self.state.apptTimeOptions[0].value;
+                        return axios.post('/api/Appointment/GetAppointmentTimeOptions', tripObject);
+                })).then(result => {
+                    var apptTimeOptions = result.data.map((item) => { return { value: item, label: item } });
+                    //apptTimeOptions.unshift({ value: null, text: 'Please select an option' });
+
+                    self.setState({
+                        apptTimeOptions
+                    });
+
+                    if (apptTimeOptions.length != 0)
+                        self.setState({
+                            apptTime: apptTimeOptions[0].value
+                        });
                 });
 
         } catch (error) {
@@ -111,14 +131,17 @@ export class AddAppointment extends Component {
     }
 
     setDefaultDate() {
-        var defaultDate = moment();
-        var day = defaultDate.day();
-        if (day == 0)
-            defaultDate.add(1, 'd').toDate()
-        else if (day == 6)
-            defaultDate.add(2, 'd').toDate()
+        var defaultDate = new Date();
+        var day = getDay(defaultDate);
+        if (day == sunday)
+            defaultDate = toDate(addDays(defaultDate, 1));
+        else if (day == saturday)
+            defaultDate = toDate(addDays(defaultDate, 2));
 
-        this.date = defaultDate.format('L')
+        //this.date = defaultDate.format('L');
+        this.setState({
+            apptDate: defaultDate
+        });
     }
 
     onSubmit(e) {
@@ -147,7 +170,6 @@ export class AddAppointment extends Component {
                             selected={this.state.apptDate}
                             onChange={date => this.setStartDate(date)}
                             minDate={new Date()}
-                            showDisabledMonthNavigation
                         />
                     </FormGroup>
                     <FormGroup>
@@ -181,6 +203,17 @@ export class AddAppointment extends Component {
                             value={this.state.apptLength} 
                             onChange={this.onChangeApptLength} 
                             options={this.state.apptLengthOptions}>
+                        </Select>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="apptTimeSelect">Select a time:</Label>
+                        <Select 
+                            type="select" 
+                            name="apptTimeSelect" 
+                            id="apptTimeSelect" 
+                            value={this.state.apptTime} 
+                            onChange={this.onChangeApptTime} 
+                            options={this.state.apptTimeOptions}>
                         </Select>
                     </FormGroup>
                     <div className="form-group">
