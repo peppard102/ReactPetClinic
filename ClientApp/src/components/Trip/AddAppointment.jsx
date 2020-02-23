@@ -121,7 +121,7 @@ export class AddAppointment extends Component {
 
                     if (apptTimeOptions.length != 0)
                         self.setState({
-                            apptTime: apptTimeOptions[0].value
+                            apptTime: apptTimeOptions[0]
                         });
                 });
 
