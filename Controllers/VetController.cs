@@ -22,6 +22,35 @@ namespace ReactPetClinic.Controllers
             return Ok();
         }
 
+        [HttpGet("[action]")]
+        public List<Vet> GetAllVets()
+        {
+            return _service.GetAllVets();
+        }
+
+        // GET: api/Pet/5
+        [HttpGet("[action]/{id}")]
+        public Vet GetVetById(int id)
+        {
+            return _service.GetVetById(id);
+        }
+
+        // PUT: api/Pet
+        [HttpPut("[action]")]
+        public Vet UpdateVet([FromBody]Vet value)
+        {
+            _service.UpdateVet(value);
+            return value;
+        }
+
+        // DELETE: api/Pet/5
+        [HttpDelete("[action]/{id}")]
+        public int DeleteVet(int id)
+        {
+            _service.DeleteVet(new Vet { Id = id});
+            return id;
+        }
+
         // [HttpGet("GetTripById/{id}")]
         // public IActionResult GetTripById(int id)
         // {

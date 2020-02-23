@@ -22,37 +22,33 @@ namespace ReactPetClinic.Controllers
             return Ok();
         }
 
-        // [HttpGet("GetTripById/{id}")]
-        // public IActionResult GetTripById(int id)
-        // {
-        //     return Ok(_service.GetTripById(id));
-        // }
+        [HttpGet("[action]")]
+        public List<Pet> GetAllPets()
+        {
+            return _service.GetAllPets();
+        }
 
-        // [HttpPost("[action]")]
-        // public IActionResult AddTrip([FromBody]Trip trip)
-        // {
-        //     if(trip != null)
-        //     {
-        //         _service.AddTrip(trip);
-        //     }
-        //     return Ok();
-        // }
+        // GET: api/Pet/5
+        [HttpGet("[action]/{id}")]
+        public Pet GetPetById(int id)
+        {
+            return _service.GetPetById(id);
+        }
 
-        // [HttpPut("UpdateTrip/{id}")]
-        // public IActionResult UpdateTrip(int id, [FromBody]Trip trip)
-        // {
-        //     if(trip != null)
-        //     {
-        //         _service.UpdateTrip(id, trip);
-        //     }
-        //     return Ok(trip);
-        // }
+        // PUT: api/Pet
+        [HttpPut("[action]")]
+        public Pet UpdatePet([FromBody]Pet value)
+        {
+            _service.UpdatePet(value);
+            return value;
+        }
 
-        // [HttpDelete("DeleteTrip/{id}")]
-        // public IActionResult DeleteTrip(int id)
-        // {
-        //     _service.DeleteTrip(id);
-        //     return Ok();
-        // }
+        // DELETE: api/Pet/5
+        [HttpDelete("[action]/{id}")]
+        public int DeletePet(int id)
+        {
+            _service.DeletePet(new Pet { Id = id});
+            return id;
+        }
     }
 }

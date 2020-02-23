@@ -28,37 +28,33 @@ namespace ReactPetClinic.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("GetAppointmentGrid")]
+        [HttpGet("[action]")]
         public List<AppointmentGrid> GetAppointmentGrid()
         {
             return _service.GetAppointmentGrid();
         }
 
-        [HttpGet]
-        [Route("lengthOptions")]
+        [HttpGet("[action]")]
         public List<AppointmentLengthOptions> GetAllAppointmentLengthOptions()
         {
             return _service.GetAllAppointmentLengthOptions();
         }
 
         // GET: api/Appointment/5
-        [HttpGet("{id}")]
-        public Appointment GetAppointment(int id)
+        [HttpGet("[action]/{id}")]
+        public Appointment GetAppointmentById(int id)
         {
             return _service.GetById(id);
         }
         
-        // GET: api/Appointment/5
-        [HttpPost]
-        [Route("timeOptions")]
+        [HttpPost("[action]")]
         public List<TimeSpan> GetAppointmentTimeOptions([FromBody]AppointmentLengthParams apptLengthParams)
         {
             return _service.GetAppointmentTimeOptions(apptLengthParams);
         }
 
         // POST: api/Appointment
-        [HttpPost]
+        [HttpPost("[action]")]
         public Appointment PostAppointment([FromBody]Appointment value)
         {
             value.StartTime = value.StartTime.ToLocalTime();
@@ -68,7 +64,7 @@ namespace ReactPetClinic.Controllers
         }
 
         // PUT: api/Appointment
-        [HttpPut]
+        [HttpPut("[action]")]
         public Appointment PutAppointment([FromBody]Appointment value)
         {
             _service.UpdateAppointment(value);
@@ -76,7 +72,7 @@ namespace ReactPetClinic.Controllers
         }
 
         // DELETE: api/Appointment/5
-        [HttpDelete("{id}")]
+        [HttpDelete("[action]/{id}")]
         public int DeleteAppointment(int id)
         {
             _service.DeleteAppointment(new Appointment { Id = id});

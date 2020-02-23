@@ -34,7 +34,6 @@ namespace React_Pet_Clinic
             });
 
             services.AddScoped<IDbConnection, SqlConnection>(ctx => new SqlConnection(Environment.GetEnvironmentVariable("PetClinicConnectionString")));
-            services.AddTransient<ITripService, TripService>();
             services.AddTransient<IAppointmentService, AppointmentService>();
             services.AddTransient<IPetService, PetService>();
             services.AddTransient<IVetService, VetService>();

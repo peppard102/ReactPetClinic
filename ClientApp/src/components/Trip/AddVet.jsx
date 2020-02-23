@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import { Form, FormGroup, Label, Input } from 'reactstrap';
 
 export class AddVet extends Component {
     constructor(props) {
@@ -45,19 +46,17 @@ export class AddVet extends Component {
         return (
             <div className="trip-form">
                 <h3>Add New Vet</h3>
-                <form onSubmit={this.onSubmit}>
-                    <div className="form-group">
-                        <label>First Name:  </label>
-                        <input type="text" className="form-control" value={this.state.firstName} onChange={this.onChangeFirstName}/>
-                    </div>
-                    <div className="form-group">
-                        <label>Last Name:  </label>
-                        <input type="text" className="form-control" value={this.state.lastName} onChange={this.onChangeLastName}/>
-                    </div>
-                    <div className="form-group">
-                        <input type="submit" value="Add Vet" className="btn btn-primary"/>
-                    </div>
-                </form>
+                <Form onSubmit={this.onSubmit}>
+                    <FormGroup>
+                        <Label for="firstName">First Name</Label>
+                        <Input type="text" name="firstName" id="firstName" placeholder="Enter First Name" value={this.state.firstName} onChange={this.onChangeFirstName} />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="lastName">Last Name</Label>
+                        <Input type="text" name="lastName" id="lastName" placeholder="Enter Last Name" value={this.state.lastName} onChange={this.onChangeLastName} />
+                    </FormGroup><br/>
+                    <input type="submit" value="Add Vet" className="btn btn-primary"/>
+                </Form>
             </div>
         )
     }

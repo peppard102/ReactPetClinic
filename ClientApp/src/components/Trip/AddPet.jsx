@@ -39,11 +39,11 @@ export class AddPet extends Component {
                 <h3>Add New Pet</h3>
                 <Form onSubmit={this.onSubmit}>
                     <FormGroup>
-                        <Label for="petName">Pet Name</Label>
+                        <Label for="petName">Pet Name:</Label>
                         <Input type="text" name="petName" id="petName" placeholder="Enter Pet Name" value={this.state.name} onChange={this.onChangeName} />
                     </FormGroup>
                     <FormGroup>
-                        <Label for="speciesSelect">Species</Label>
+                        <Label for="speciesSelect">Species:</Label>
                         <Input type="select" name="speciesSelect" id="speciesSelect">
                         <option>Cat</option>
                         <option>Dog</option>
@@ -53,7 +53,7 @@ export class AddPet extends Component {
                         </Input>
                     </FormGroup>
                     <FormGroup>
-                        <Label for="exampleText">Allergies</Label>
+                        <Label for="exampleText">Allergies:</Label>
                         <Input type="textarea" name="text" id="exampleText" />
                     </FormGroup>
                     <FormGroup tag="fieldset">
@@ -78,7 +78,7 @@ export class AddPet extends Component {
                         </FormGroup>
                     </FormGroup>
                     <FormGroup>
-                        <Label for="exampleFile">Medical Records</Label>
+                        <Label for="exampleFile">Medical Records:</Label>
                         <Input type="file" name="file" id="exampleFile" />
                     </FormGroup><br/>
                     {/* <Button >Submit</Button> */}

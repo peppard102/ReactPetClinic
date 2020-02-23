@@ -22,5 +22,23 @@ namespace ReactPetClinic.Data
         {
             return  _db.Insert(vet);
         }
+
+        public Vet GetVetById(int id)
+        {
+            return _db.Get<Vet>(id);
+        }
+        public List<Vet> GetAllVets()
+        {
+            return _db.GetAll<Vet>().ToList();
+        }
+
+        public void UpdateVet(Vet vet)
+        {
+            _db.Update(vet);
+        }
+        public void DeleteVet(Vet vet)
+        {
+            _db.Delete(vet);
+        }
     }
 }
