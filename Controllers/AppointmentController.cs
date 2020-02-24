@@ -60,7 +60,7 @@ namespace ReactPetClinic.Controllers
 
         // POST: api/Appointment
         [HttpPost("[action]")]
-        public Appointment PostAppointment([FromBody]Appointment value)
+        public Appointment AddAppointment([FromBody]Appointment value)
         {
             value.StartTime = value.StartTime.ToLocalTime();
             value.EndTime = value.EndTime.ToLocalTime();
@@ -70,7 +70,7 @@ namespace ReactPetClinic.Controllers
 
         // PUT: api/Appointment
         [HttpPut("[action]")]
-        public Appointment PutAppointment([FromBody]Appointment value)
+        public Appointment UpdateAppointment([FromBody]Appointment value)
         {
             _service.UpdateAppointment(value);
             return value;
