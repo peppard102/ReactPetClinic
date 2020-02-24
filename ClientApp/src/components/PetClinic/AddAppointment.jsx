@@ -16,7 +16,7 @@ export class AddAppointment extends Component {
 
     this.state = {
       apptDate: new Date(),
-      pet: "",
+      pet: null,
       vet: null,
       apptLength: null,
       apptTime: null,
@@ -43,6 +43,7 @@ export class AddAppointment extends Component {
 
   onChangeVet = vet => {
     this.setState({ vet });
+    this.resetAppointmentTimeOptions(this.state.apptDate, vet.value, this.state.apptLength.value)
   };
 
   onChangeApptLength = apptLength => {
@@ -53,16 +54,10 @@ export class AddAppointment extends Component {
     this.setState({ apptTime });
   };
 
-  setStartDate = date => {
+  resetAppointmentTimeOptions(date, vetId, lengthofAppt) {
     let self = this;
 
-    self.setState({
-      apptDate: startOfDay(date)
-    });
-
-
-
-    axios.post('/api/Appointment/GetAppointmentTimeOptions', { VetId: self.state.vet.value, Date: date, lengthOfAppt: self.state.apptLength.value })
+    axios.post('/api/Appointment/GetAppointmentTimeOptions', { VetId: vetId, Date: date, lengthOfAppt: lengthofAppt })
       .then(result => {
         var apptTimeOptions = result.data.map((item) => { return { value: item, label: item.hours + ":" + item.minutes.toString().padStart(2, '0') } });
 
@@ -74,7 +69,15 @@ export class AddAppointment extends Component {
           self.setState({
             apptTime: apptTimeOptions[0]
           });
-      })
+      });
+  };
+
+  onChangeDate = date => {
+    this.setState({
+      apptDate: startOfDay(date)
+    });
+
+    this.resetAppointmentTimeOptions(date, this.state.vet.value, this.state.apptLength.value)
   };
 
   setDefaultDate() {
@@ -89,10 +92,12 @@ export class AddAppointment extends Component {
     this.setState({
       apptDate: defaultDate
     });
+
+    return defaultDate;
   }
 
   LoadData() {
-    this.setDefaultDate();
+    let defaultDate = this.setDefaultDate();
     try {
       let self = this;
 
@@ -110,53 +115,27 @@ export class AddAppointment extends Component {
       }
 
       axios.all([getPets(), getVets(), getApptLengths()])
-        .then(axios.spread(function (petsResult, vetsResult, ApptLengthsResult) {
+        .then(axios.spread(function (petsResult, vetsResult, apptLengthsResult) {
           petsResult = petsResult.data.map((item) => ({ value: item.id, label: item.name }));
           vetsResult = vetsResult.data.map((item) => ({ value: item.id, label: item.firstName + ' ' + item.lastName }));
-          ApptLengthsResult = ApptLengthsResult.data.map((item) => ({ value: item.lengthInMinutes, label: item.lengthInMinutes }));
+          apptLengthsResult = apptLengthsResult.data.map((item) => ({ value: item.lengthInMinutes, label: item.lengthInMinutes }));
+          let defaultPet = petsResult.length !== 0 ? petsResult[0] : null;
+          let defaultVet = vetsResult.length !== 0 ? vetsResult[0] : null;
+          let defaultApptLength = apptLengthsResult.length !== 0 ? apptLengthsResult[0] : null;
 
           self.setState({
             petsList: petsResult,
             vetsList: vetsResult,
-            apptLengthOptions: ApptLengthsResult
+            apptLengthOptions: apptLengthsResult,
+            pet: defaultPet,
+            vet: defaultVet,
+            apptLength: defaultApptLength,
           });
 
-          // Set defaults
-          if (self.state.petsList.length !== 0)
-            self.setState({
-              pet: self.state.petsList[0]
-            });
+          if (defaultVet != null && defaultApptLength != null)
+            self.resetAppointmentTimeOptions(defaultDate, defaultVet.value, defaultApptLength.value);
 
-          if (self.state.vetsList.length !== 0)
-            self.setState({
-              vet: self.state.vetsList[0]
-            });
-
-          if (self.state.apptLengthOptions.length !== 0)
-            self.setState({
-              apptLength: self.state.apptLengthOptions[0]
-            });
-
-          let tripObject = {
-            VetId: vetsResult[0].value,
-            Date: self.state.apptDate,
-            LengthOfAppt: ApptLengthsResult[0].value
-          }
-
-          return axios.post('/api/Appointment/GetAppointmentTimeOptions', tripObject);
-        })).then(result => {
-          var apptTimeOptions = result.data.map((item) => { return { value: item, label: item.hours + ":" + item.minutes.toString().padStart(2, '0') } });
-
-          self.setState({
-            apptTimeOptions
-          });
-
-          if (apptTimeOptions.length !== 0) // Choose the first option if there is one
-            self.setState({
-              apptTime: apptTimeOptions[0]
-            });
-        });
-
+        }));
     } catch (error) {
       console.log(error);
     }
@@ -185,11 +164,7 @@ export class AddAppointment extends Component {
         if (self.apptTimeOptions.length !== 0)
           self.state.apptTime = self.apptTimeOptions[0].value;
 
-        this.showAlert = true;
-
-        setTimeout(function () {
-          self.showAlert = false
-        }, 3000);
+        self.props.history.push('/allAppointments');
       });
   }
 
@@ -203,7 +178,7 @@ export class AddAppointment extends Component {
             <br />
             <DatePicker
               selected={this.state.apptDate}
-              onChange={date => this.setStartDate(date)}
+              onChange={date => this.onChangeDate(date)}
               filterDate={this.isWeekday}
               minDate={new Date()}
             />
