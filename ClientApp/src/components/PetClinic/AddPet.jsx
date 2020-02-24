@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
-import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap';
+import { Form, FormGroup, Label, Input } from 'reactstrap';
 
 export class AddPet extends Component {
     constructor(props) {
@@ -22,7 +22,7 @@ export class AddPet extends Component {
 
     onSubmit(e) {
         e.preventDefault();
-        const {history} = this.props;
+        const { history } = this.props;
 
         let pet = {
             name: this.state.name
@@ -45,11 +45,11 @@ export class AddPet extends Component {
                     <FormGroup>
                         <Label for="speciesSelect">Species:</Label>
                         <Input type="select" name="speciesSelect" id="speciesSelect">
-                        <option>Cat</option>
-                        <option>Dog</option>
-                        <option>Bird</option>
-                        <option>Hamster</option>
-                        <option>Other</option>
+                            <option>Cat</option>
+                            <option>Dog</option>
+                            <option>Bird</option>
+                            <option>Hamster</option>
+                            <option>Other</option>
                         </Input>
                     </FormGroup>
                     <FormGroup>
@@ -59,30 +59,29 @@ export class AddPet extends Component {
                     <FormGroup tag="fieldset">
                         <legend>Vaccinations Up to Date?</legend>
                         <FormGroup check>
-                        <Label check>
-                            <Input type="radio" name="radio1" />{' '}
-                            Yes
+                            <Label check>
+                                <Input type="radio" name="radio1" />{' '}
+                                Yes
                         </Label>
                         </FormGroup>
                         <FormGroup check>
-                        <Label check>
-                            <Input type="radio" name="radio1" />{' '}
-                            No
+                            <Label check>
+                                <Input type="radio" name="radio1" />{' '}
+                                No
                         </Label>
                         </FormGroup>
                         <FormGroup check>
-                        <Label check>
-                            <Input type="radio" name="radio1" />{' '}
-                            Not Sure
+                            <Label check>
+                                <Input type="radio" name="radio1" />{' '}
+                                Not Sure
                         </Label>
                         </FormGroup>
                     </FormGroup>
                     <FormGroup>
                         <Label for="exampleFile">Medical Records:</Label>
                         <Input type="file" name="file" id="exampleFile" />
-                    </FormGroup><br/>
-                    {/* <Button >Submit</Button> */}
-                    <input type="submit" value="Add Pet" className="btn btn-primary"/>
+                    </FormGroup><br />
+                    <input type="submit" value="Add Pet" className="btn btn-primary" />
                 </Form>
             </div>
         )
