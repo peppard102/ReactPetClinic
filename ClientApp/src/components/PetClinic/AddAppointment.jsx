@@ -5,7 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import moment from 'moment';
 import { FormGroup, Label } from 'reactstrap';
 import Select from 'react-select';
-import { addDays, toDate, getDay, isSaturday, isSunday, getTime, startOfDay, addHours, addMinutes } from 'date-fns';
+import { addDays, toDate, isSaturday, isSunday, startOfDay, addHours, addMinutes, getDay } from 'date-fns';
 
 const sunday = 0;
 const saturday = 6;
@@ -13,9 +13,6 @@ const saturday = 6;
 export class AddAppointment extends Component {
   constructor(props) {
     super(props);
-
-    this.setStartDate = this.setStartDate.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
 
     this.state = {
       apptDate: new Date(),
@@ -27,11 +24,6 @@ export class AddAppointment extends Component {
       vetsList: [],
       apptLengthOptions: [],
       apptTimeOptions: [],
-      disabledDates: {
-        to: moment().add(-1, 'd').toDate(), // Disable all dates before today
-        days: [6, 0] // Disable weekends 
-        //days: [0] // Disable weekends 
-      },
       showAlert: false,
     }
   }
@@ -39,6 +31,11 @@ export class AddAppointment extends Component {
   componentDidMount() {
     this.LoadData();
   }
+
+  isWeekday = date => {
+    const day = getDay(date);
+    return day !== sunday && day !== saturday;
+  };
 
   onChangePet = pet => {
     this.setState({ pet });
@@ -73,7 +70,7 @@ export class AddAppointment extends Component {
           apptTimeOptions
         });
 
-        if (apptTimeOptions.length != 0) // Choose the first option if there is one
+        if (apptTimeOptions.length !== 0) // Choose the first option if there is one
           self.setState({
             apptTime: apptTimeOptions[0]
           });
@@ -114,32 +111,36 @@ export class AddAppointment extends Component {
 
       axios.all([getPets(), getVets(), getApptLengths()])
         .then(axios.spread(function (petsResult, vetsResult, ApptLengthsResult) {
+          petsResult = petsResult.data.map((item) => ({ value: item.id, label: item.name }));
+          vetsResult = vetsResult.data.map((item) => ({ value: item.id, label: item.firstName + ' ' + item.lastName }));
+          ApptLengthsResult = ApptLengthsResult.data.map((item) => ({ value: item.lengthInMinutes, label: item.lengthInMinutes }));
+
           self.setState({
-            petsList: petsResult.data.map((item) => ({ value: item.id, label: item.name })),
-            vetsList: vetsResult.data.map((item) => ({ value: item.id, label: item.firstName + ' ' + item.lastName })),
-            apptLengthOptions: ApptLengthsResult.data.map((item) => ({ value: item.lengthInMinutes, label: item.lengthInMinutes }))
+            petsList: petsResult,
+            vetsList: vetsResult,
+            apptLengthOptions: ApptLengthsResult
           });
 
           // Set defaults
-          // if (self.state.petsList.length != 0)
-          //   self.setState({
-          //     pet: self.state.petsList[0]
-          //   });
+          if (self.state.petsList.length !== 0)
+            self.setState({
+              pet: self.state.petsList[0]
+            });
 
-          // if (self.state.vetsList.length != 0)
-          //   self.setState({
-          //     vet: self.state.vetsList[0]
-          //   });
+          if (self.state.vetsList.length !== 0)
+            self.setState({
+              vet: self.state.vetsList[0]
+            });
 
-          // if (self.state.apptLengthOptions.length != 0)
-          //   self.setState({
-          //     apptLength: self.state.apptLengthOptions[0]
-          //   });
+          if (self.state.apptLengthOptions.length !== 0)
+            self.setState({
+              apptLength: self.state.apptLengthOptions[0]
+            });
 
           let tripObject = {
-            VetId: self.state.vet.value,
+            VetId: vetsResult[0].value,
             Date: self.state.apptDate,
-            LengthOfAppt: self.state.apptLength.value
+            LengthOfAppt: ApptLengthsResult[0].value
           }
 
           return axios.post('/api/Appointment/GetAppointmentTimeOptions', tripObject);
@@ -150,7 +151,7 @@ export class AddAppointment extends Component {
             apptTimeOptions
           });
 
-          if (apptTimeOptions.length != 0) // Choose the first option if there is one
+          if (apptTimeOptions.length !== 0) // Choose the first option if there is one
             self.setState({
               apptTime: apptTimeOptions[0]
             });
@@ -161,7 +162,7 @@ export class AddAppointment extends Component {
     }
   }
 
-  onSubmit(evt) {
+  onSubmit = evt => {
     evt.preventDefault();
     let self = this;
     let selectedDate = self.state.apptDate; // Get only the date part
@@ -181,7 +182,7 @@ export class AddAppointment extends Component {
       .then(result => {
         self.apptTimeOptions = result.data.map((item) => { return { value: item, text: item } });
 
-        if (self.apptTimeOptions.length != 0)
+        if (self.apptTimeOptions.length !== 0)
           self.state.apptTime = self.apptTimeOptions[0].value;
 
         this.showAlert = true;
@@ -203,6 +204,7 @@ export class AddAppointment extends Component {
             <DatePicker
               selected={this.state.apptDate}
               onChange={date => this.setStartDate(date)}
+              filterDate={this.isWeekday}
               minDate={new Date()}
             />
           </FormGroup>
