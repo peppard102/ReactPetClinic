@@ -1,9 +1,8 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 
-export class AllAppointments extends Component
-{
-    constructor(props){
+export class AllAppointments extends Component {
+    constructor(props) {
         super(props);
 
         this.onTripUpdate = this.onTripUpdate.bind(this);
@@ -22,27 +21,27 @@ export class AllAppointments extends Component
     }
 
     onTripUpdate(id) {
-        const {history} = this.props;
+        const { history } = this.props;
         history.push('/update/' + id);
     }
 
     onTripDelete(id) {
-        const {history} = this.props;
+        const { history } = this.props;
         history.push('/delete/' + id);
     }
 
     populateTripsData() {
         axios.get("api/Appointment/GetAppointmentGrid").then(result => {
             const response = result.data;
-            this.setState({appointments: response, loading: false, failed: false, error: ''});
+            this.setState({ appointments: response, loading: false, failed: false, error: '' });
         }).catch(error => {
-            this.setState({appointments: [], loading: false, failed: true, error: 'Appointments could not be loaded'});
+            this.setState({ appointments: [], loading: false, failed: true, error: 'Appointments could not be loaded' });
         })
     }
 
     renderAllAppointmentsTable(appointments) {
         return (
-            <table className="table table-striped"> 
+            <table className="table table-striped">
                 <thead>
                     <tr>
                         <th>Vet First Name</th>
@@ -60,7 +59,7 @@ export class AllAppointments extends Component
                                 <td>{appointment.vetFirstName}</td>
                                 <td>{appointment.vetLastName}</td>
                                 <td>{appointment.petName}</td>
-                                <td>{new Date(appointment.startTime).toLocaleTimeString()}</td>
+                                <td>{new Date(appointment.startTime).toLocaleString()}</td>
                                 <td>{new Date(appointment.endTime).toLocaleString()}</td>
                                 <td>
                                     <div className="form-group">
@@ -80,22 +79,22 @@ export class AllAppointments extends Component
         );
     }
 
-    render(){
+    render() {
         let content = this.state.loading ? (
             <p>
                 <em>
                     Loading...
                 </em>
             </p>
-        ) : ( this.state.failed ? (
+        ) : (this.state.failed ? (
             <div className="text-danger">
                 <em>
                     {this.state.error}
                 </em>
             </div>
         ) : (
-            this.renderAllAppointmentsTable(this.state.appointments))
-        )
+                this.renderAllAppointmentsTable(this.state.appointments))
+            )
 
         return (
             <div>
