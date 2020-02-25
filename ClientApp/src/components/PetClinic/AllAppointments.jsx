@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 export class AllAppointments extends Component {
     constructor(props) {
         super(props);
 
         this.onTripUpdate = this.onTripUpdate.bind(this);
-        this.onTripDelete = this.onTripDelete.bind(this);
 
         this.state = {
             appointments: [],
             loading: true,
+            showDeleteModal: false,
+            selectedApptId: null,
             failed: false,
             error: ''
         }
@@ -25,9 +27,20 @@ export class AllAppointments extends Component {
         history.push('/update/' + id);
     }
 
-    onTripDelete(id) {
-        const { history } = this.props;
-        history.push('/delete/' + id);
+    onAppointmentDelete = () => {
+        let self = this;
+        axios.delete("api/Appointment/DeleteAppointment/" + this.state.selectedApptId).then(result => {
+            let appointments = this.state.appointments;
+            appointments = appointments.filter(function (obj) {
+                return obj.id !== self.state.selectedApptId;
+            });
+
+            this.setState({
+                appointments
+            });
+
+            this.toggleDeleteModal();
+        })
     }
 
     populateTripsData() {
@@ -37,6 +50,11 @@ export class AllAppointments extends Component {
         }).catch(error => {
             this.setState({ appointments: [], loading: false, failed: true, error: 'Appointments could not be loaded' });
         })
+    }
+
+    toggleDeleteModal = (apptId) => {
+        this.state.selectedApptId = apptId;
+        this.setState(prevState => ({ showDeleteModal: !prevState.showDeleteModal }));
     }
 
     renderAllAppointmentsTable(appointments) {
@@ -66,7 +84,7 @@ export class AllAppointments extends Component {
                                         <button onClick={() => this.onTripUpdate(appointment.id)} className="btn btn-success">
                                             Update
                                         </button>
-                                        <button onClick={() => this.onTripDelete(appointment.id)} className="btn btn-danger">
+                                        <button onClick={() => this.toggleDeleteModal(appointment.id)} className="btn btn-danger">
                                             Delete
                                         </button>
                                     </div>
@@ -105,7 +123,19 @@ export class AllAppointments extends Component {
                     Here are all of the appointments scheduled at this clinic.
                 </p>
                 {content}
-            </div>
+
+                <Modal isOpen={this.state.showDeleteModal}
+                    toggle={this.toggleDeleteModal}>
+                    <ModalHeader toggle={this.toggleDeleteModal}>Confirm</ModalHeader>
+                    <ModalBody>
+                        Are you sure you would like to delete this appointment?
+                        </ModalBody>
+                    <ModalFooter>
+                        <Button color="primary" onClick={this.onAppointmentDelete}>Delete</Button>{' '}
+                        <Button color="secondary" onClick={this.toggleDeleteModal}>Cancel</Button>
+                    </ModalFooter>
+                </Modal>
+            </div >
         );
     }
 }
