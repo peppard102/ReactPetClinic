@@ -81,7 +81,7 @@ export class AllAppointments extends Component {
                                 <td>{new Date(appointment.endTime).toLocaleString()}</td>
                                 <td>
                                     <div className="form-group">
-                                        <button onClick={() => this.onTripUpdate(appointment.id)} className="btn btn-success">
+                                        <button onClick={() => this.onTripUpdate(appointment.id)} className="btn btn-success mr-2">
                                             Update
                                         </button>
                                         <button onClick={() => this.toggleDeleteModal(appointment.id)} className="btn btn-danger">
