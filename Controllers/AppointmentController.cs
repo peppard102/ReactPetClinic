@@ -2,6 +2,7 @@ using System;
 using Microsoft.AspNetCore.Mvc;
 using ReactPetClinic.Data;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ReactPetClinic.Controllers
 {
@@ -14,13 +15,15 @@ namespace ReactPetClinic.Controllers
             this._service = service;
         }
 
+        // GET: api/Appointment/GetAllAppointments
         [HttpGet("[action]")]
-        public IActionResult GetAllAppointments()
+        public async Task<IActionResult> GetAllAppointments()
         {
             try
             {
                 // throw new Exception();
-                return Ok(_service.GetAllAppointments());
+                var result = await _service.GetAllAppointments();
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -28,61 +31,118 @@ namespace ReactPetClinic.Controllers
             }
         }
 
+        // GET: api/Appointment/GetAppointmentGrid
         [HttpGet("[action]")]
-        public List<AppointmentGrid> GetAppointmentGrid()
+        public async Task<IActionResult> GetAppointmentGrid()
         {
-            return _service.GetAppointmentGrid();
+            try
+            {
+                var result = await _service.GetAppointmentGrid();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
+        // GET: api/Appointment/GetAllAppointmentLengthOptions
         [HttpGet("[action]")]
-        public List<AppointmentLengthOptions> GetAllAppointmentLengthOptions()
+        public async Task<IActionResult> GetAllAppointmentLengthOptions()
         {
-            return _service.GetAllAppointmentLengthOptions();
+            try
+            {
+                var result = await _service.GetAllAppointmentLengthOptions();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET: api/Appointment/GetAppointmentById/5
         [HttpGet("[action]/{id}")]
-        public Appointment GetAppointmentById(int id)
+        public async Task<IActionResult> GetAppointmentById(int id)
         {
-            return _service.GetById(id);
+            try
+            {
+                var result = await _service.GetById(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // POST: api/Appointment/GetAppointmentTimeOptions
         [HttpPost("[action]")]
-        public List<TimeSpan> GetAppointmentTimeOptions([FromBody]AppointmentLengthParams apptLengthParams)
+        public async Task<IActionResult> GetAppointmentTimeOptions([FromBody]AppointmentLengthParams apptLengthParams)
         {
-            apptLengthParams.Date = apptLengthParams.Date.ToLocalTime();
-            return _service.GetAppointmentTimeOptions(apptLengthParams);
+            try
+            {
+                apptLengthParams.Date = apptLengthParams.Date.ToLocalTime();
+                var result = await _service.GetAppointmentTimeOptions(apptLengthParams);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // POST: api/Appointment/AddAppointment
         [HttpPost("[action]")]
-        public Appointment AddAppointment([FromBody]Appointment value)
+        public async Task<IActionResult> AddAppointment([FromBody]Appointment value)
         {
-            value.StartTime = value.StartTime.ToLocalTime();
-            value.EndTime = value.EndTime.ToLocalTime();
-            _service.AddAppointment(value);
-            return value;
-        }
-
-        [HttpPut("UpdateAppointment/{id}")]
-        public IActionResult UpdateAppointment(int id, [FromBody]Appointment value)
-        {
-            if (value != null)
+            try
             {
                 value.StartTime = value.StartTime.ToLocalTime();
                 value.EndTime = value.EndTime.ToLocalTime();
-                _service.UpdateAppointment(id, value);
+                var result = await _service.AddAppointment(value);
+
+                return Ok(result);
             }
-            return Ok(value);
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // PUT: api/Appointment/UpdateAppointment/5
+        [HttpPut("[action]/{id}")]
+        public async Task<IActionResult> UpdateAppointment(int id, [FromBody]Appointment value)
+        {
+            try
+            {
+                value.StartTime = value.StartTime.ToLocalTime();
+                value.EndTime = value.EndTime.ToLocalTime();
+                var result = await _service.UpdateAppointment(id, value);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE: api/Appointment/DeleteAppointment/5
         [HttpDelete("[action]/{id}")]
-        public int DeleteAppointment(int id)
+        public async Task<IActionResult> DeleteAppointment(int id)
         {
-            _service.DeleteAppointment(new Appointment { Id = id });
-            return id;
+            try
+            {
+                var result = await _service.DeleteAppointment(new Appointment { Id = id });
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

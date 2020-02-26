@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Data;
 using Dapper.Contrib.Extensions;
 using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
 
 namespace ReactPetClinic.Data
 {
@@ -18,49 +19,49 @@ namespace ReactPetClinic.Data
             _db = db;
         }
 
-        public Appointment GetById(int id)
+        public async Task<Appointment> GetById(int id)
         {
 
-            return _db.Get<Appointment>(id);
+            return await _db.GetAsync<Appointment>(id);
         }
-        public List<Appointment> GetAllAppointments()
+        public async Task<IEnumerable<Appointment>> GetAllAppointments()
         {
 
-            return _db.GetAll<Appointment>().ToList();
+            return await _db.GetAllAsync<Appointment>();
         }
 
-        public List<AppointmentGrid> GetAppointmentGrid()
+        public async Task<IEnumerable<AppointmentGrid>> GetAppointmentGrid()
         {
-            return _db.Query<AppointmentGrid>("up_GetAppointmentGrid",
-                commandType: CommandType.StoredProcedure).ToList();
+            return await _db.QueryAsync<AppointmentGrid>("up_GetAppointmentGrid",
+                commandType: CommandType.StoredProcedure);
         }
 
-        public List<AppointmentLengthOptions> GetAllAppointmentLengthOptions()
+        public async Task<IEnumerable<AppointmentLengthOptions>> GetAllAppointmentLengthOptions()
         {
 
-            return _db.GetAll<AppointmentLengthOptions>().ToList();
+            return await _db.GetAllAsync<AppointmentLengthOptions>();
         }
 
-        public List<TimeSpan> GetAppointmentTimeOptions(AppointmentLengthParams appointment)
+        public async Task<IEnumerable<TimeSpan>> GetAppointmentTimeOptions(AppointmentLengthParams appointment)
         {
-            return _db.Query<TimeSpan>("up_GetAvailableTimes", new { VetId = appointment.VetId, Date = appointment.Date, lengthOfAppt = appointment.LengthOfAppt },
-                commandType: CommandType.StoredProcedure).ToList();
+            return await _db.QueryAsync<TimeSpan>("up_GetAvailableTimes", new { VetId = appointment.VetId, Date = appointment.Date, lengthOfAppt = appointment.LengthOfAppt },
+                commandType: CommandType.StoredProcedure);
         }
 
-        public long AddAppointment(Appointment appointment)
+        public async Task<long> AddAppointment(Appointment appointment)
         {
-            return _db.Insert(appointment);
+            return await _db.InsertAsync(appointment);
         }
 
-        public void UpdateAppointment(int id, Appointment appointment)
+        public async Task<bool> UpdateAppointment(int id, Appointment appointment)
         {
             appointment.Id = id;
-            _db.Update(appointment);
+            return await _db.UpdateAsync(appointment);
         }
 
-        public void DeleteAppointment(Appointment appointment)
+        public async Task<bool> DeleteAppointment(Appointment appointment)
         {
-            _db.Delete(appointment);
+            return await _db.DeleteAsync(appointment);
         }
     }
 }

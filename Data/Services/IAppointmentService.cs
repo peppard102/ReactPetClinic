@@ -1,17 +1,18 @@
 using System.Collections.Generic;
 using System;
+using System.Threading.Tasks;
 
 namespace ReactPetClinic.Data
 {
     public interface IAppointmentService
     {
-        Appointment GetById(int id);
-        List<Appointment> GetAllAppointments();
-        List<AppointmentGrid> GetAppointmentGrid();
-        List<AppointmentLengthOptions> GetAllAppointmentLengthOptions();
-        List<TimeSpan> GetAppointmentTimeOptions(AppointmentLengthParams appointment);
-        long AddAppointment(Appointment appointment);
-        void UpdateAppointment(int id, Appointment appointment);
-        void DeleteAppointment(Appointment appointment);
+        Task<Appointment> GetById(int id);
+        Task<IEnumerable<Appointment>> GetAllAppointments();
+        Task<IEnumerable<AppointmentGrid>> GetAppointmentGrid();
+        Task<IEnumerable<AppointmentLengthOptions>> GetAllAppointmentLengthOptions();
+        Task<IEnumerable<TimeSpan>> GetAppointmentTimeOptions(AppointmentLengthParams appointment);
+        Task<long> AddAppointment(Appointment appointment);
+        Task<bool> UpdateAppointment(int id, Appointment appointment);
+        Task<bool> DeleteAppointment(Appointment appointment);
     }
 }
