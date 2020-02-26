@@ -44,7 +44,8 @@ namespace ReactPetClinic.Data
 
         public async Task<IEnumerable<TimeSpan>> GetAppointmentTimeOptions(AppointmentLengthParams appointment)
         {
-            return await _db.QueryAsync<TimeSpan>("up_GetAvailableTimes", new { VetId = appointment.VetId, Date = appointment.Date, lengthOfAppt = appointment.LengthOfAppt },
+            return await _db.QueryAsync<TimeSpan>("up_GetAvailableTimes",
+                new { VetId = appointment.VetId, Date = appointment.Date, LengthOfAppt = appointment.LengthOfAppt, ModifyingApptId = appointment.ModifyingApptId },
                 commandType: CommandType.StoredProcedure);
         }
 

@@ -35,7 +35,7 @@ export class AddPet extends Component {
 
     render() {
         return (
-            <div className="trip-form">
+            <div>
                 <h3>Add New Pet</h3>
                 <Form onSubmit={this.onSubmit}>
                     <FormGroup>

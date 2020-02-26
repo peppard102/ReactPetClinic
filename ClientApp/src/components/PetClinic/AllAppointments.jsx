@@ -53,7 +53,7 @@ export class AllAppointments extends Component {
     }
 
     toggleDeleteModal = (apptId) => {
-        this.state.selectedApptId = apptId;
+        this.setState({ selectedApptId: apptId });
         this.setState(prevState => ({ showDeleteModal: !prevState.showDeleteModal }));
     }
 
@@ -62,7 +62,7 @@ export class AllAppointments extends Component {
     }
 
     onClickUpdate = (apptId) => {
-        this.state.selectedApptId = apptId;
+        this.setState({ selectedApptId: apptId });
         this.props.history.push('/editAppointment/' + apptId);
     }
 

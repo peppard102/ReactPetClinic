@@ -57,22 +57,13 @@ export class AddAppointment extends Component {
     this.setState({ apptTime });
   };
 
-  resetAppointmentTimeOptions(date, vetId, lengthofAppt, savedStartTime) {
+  resetAppointmentTimeOptions(date, vetId, lengthofAppt) {
     let self = this;
 
     if (date && vetId && lengthofAppt) // Only get the appointment lengths if all of the parameters are non-null
-      return axios.post('/api/Appointment/GetAppointmentTimeOptions', { VetId: vetId, Date: date, lengthOfAppt: lengthofAppt })
+      return axios.post('/api/Appointment/GetAppointmentTimeOptions', { VetId: vetId, Date: date, LengthOfAppt: lengthofAppt, ModifyingApptId: parseInt(this.state.apptId) })
         .then(result => {
           var apptTimeOptions = result.data.map((item) => { return { value: item, label: item.hours + ":" + item.minutes.toString().padStart(2, '0') } });
-
-          if (savedStartTime) { //Add the new item so that the array is still sorted
-            apptTimeOptions.splice(
-              _.sortedIndexBy(apptTimeOptions, savedStartTime,
-                function (o) {
-                  return o.label.toString().padStart(5, '0');
-                }
-              ), 0, savedStartTime);
-          }
 
           self.setState({
             apptTimeOptions
@@ -150,7 +141,7 @@ export class AddAppointment extends Component {
               const time = getHours(startTime) + ":" + getMinutes(startTime).toString().padStart(2, '0');
               const apptDate = startOfDay(startTime);
 
-              self.resetAppointmentTimeOptions(apptDate, appt.vetId, apptLength, { value: { hours: getHours(startTime), minutes: getMinutes(startTime) }, label: time }).then(response => {
+              self.resetAppointmentTimeOptions(apptDate, appt.vetId, apptLength).then(response => {
                 self.setState({
                   apptDate: apptDate,
                   pet: self.state.petsList.find(x => x.value === appt.petId),
@@ -218,7 +209,7 @@ export class AddAppointment extends Component {
 
   render() {
     return (
-      <div className="trip-form">
+      <div>
         <h3>{this.state.title}</h3>
         <form onSubmit={this.onSubmit}>
           <FormGroup>

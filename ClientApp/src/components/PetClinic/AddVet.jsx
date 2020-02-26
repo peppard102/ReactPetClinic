@@ -44,7 +44,7 @@ export class AddVet extends Component {
 
     render() {
         return (
-            <div className="trip-form">
+            <div>
                 <h3>Add New Vet</h3>
                 <Form onSubmit={this.onSubmit}>
                     <FormGroup>
