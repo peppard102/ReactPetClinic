@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import { Trips } from './AllAppointments';
 
@@ -22,7 +22,7 @@ export class Update extends Component {
     }
 
     componentDidMount() {
-        const {id} = this.props.match.params;
+        const { id } = this.props.match.params;
         axios.get("api/Trips/GetTripById/" + id).then(trip => {
             const response = trip.data;
             this.setState({
@@ -59,14 +59,14 @@ export class Update extends Component {
     }
 
     onUpdateCancel() {
-        const {history} = this.props; // Same as writing: const history = this.props.history
-        history.push('/allAppointments');
+        const { history } = this.props; // Same as writing: const history = this.props.history
+        history.push('/');
     }
 
     onSubmit(e) {
         e.preventDefault();
-        const {history} = this.props; // Same as writing: const history = this.props.history
-        const {id} = this.props.match.params; // Same as writing: const id = this.props.match.params.id
+        const { history } = this.props; // Same as writing: const history = this.props.history
+        const { id } = this.props.match.params; // Same as writing: const id = this.props.match.params.id
 
         let tripObject = {
             name: this.state.name,
@@ -76,7 +76,7 @@ export class Update extends Component {
         }
 
         axios.put("api/Trips/UpdateTrip/" + id, tripObject).then(result => {
-            history.push('/allAppointments');
+            history.push('/');
         });
     }
 
@@ -87,23 +87,23 @@ export class Update extends Component {
                 <form onSubmit={this.onSubmit}>
                     <div className="form-group">
                         <label>Trip name:  </label>
-                        <input type="text" className="form-control" value={this.state.name} onChange={this.onChangeName}/>
+                        <input type="text" className="form-control" value={this.state.name} onChange={this.onChangeName} />
                     </div>
                     <div className="form-group">
                         <label>Trip description: </label>
-                        <textarea type="text" className="form-control" value={this.state.description} onChange={this.onChangeDescription}/>
+                        <textarea type="text" className="form-control" value={this.state.description} onChange={this.onChangeDescription} />
                     </div>
                     <div className="row">
                         <div className="col col-md-6 col-sm-6 col-xs-12">
                             <div className="form-group">
                                 <label>Date of start:  </label>
-                                <input type="date" className="form-control" value={this.state.dateStarted} onChange={this.onChangeDateStarted}/>
+                                <input type="date" className="form-control" value={this.state.dateStarted} onChange={this.onChangeDateStarted} />
                             </div>
                         </div>
                         <div className="col col-md-6 col-sm-6 col-xs-12">
-                          <div className="form-group">
-                            <label>Date of completion:  </label>
-                            <input type="date" className="form-control" value={this.state.dateCompleted} onChange={this.onChangeDateCompleted}/>
+                            <div className="form-group">
+                                <label>Date of completion:  </label>
+                                <input type="date" className="form-control" value={this.state.dateCompleted} onChange={this.onChangeDateCompleted} />
                             </div>
                         </div>
                     </div>

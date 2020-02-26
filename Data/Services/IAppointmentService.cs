@@ -11,7 +11,7 @@ namespace ReactPetClinic.Data
         List<AppointmentLengthOptions> GetAllAppointmentLengthOptions();
         List<TimeSpan> GetAppointmentTimeOptions(AppointmentLengthParams appointment);
         long AddAppointment(Appointment appointment);
-        void UpdateAppointment(Appointment appointment);
+        void UpdateAppointment(int id, Appointment appointment);
         void DeleteAppointment(Appointment appointment);
     }
 }

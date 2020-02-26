@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-import moment from 'moment';
 import { FormGroup, Label } from 'reactstrap';
 import Select from 'react-select';
-import { addDays, toDate, isSaturday, isSunday, startOfDay, addHours, addMinutes, getDay } from 'date-fns';
+import { addDays, toDate, isSaturday, isSunday, startOfDay, addHours, addMinutes, getDay, getHours, getMinutes } from 'date-fns';
+import _ from 'lodash';
 
 const sunday = 0;
 const saturday = 6;
@@ -15,6 +15,8 @@ export class AddAppointment extends Component {
     super(props);
 
     this.state = {
+      apptId: null,
+      title: "Add New Appointment",
       apptDate: new Date(),
       pet: null,
       vet: null,
@@ -43,33 +45,43 @@ export class AddAppointment extends Component {
 
   onChangeVet = vet => {
     this.setState({ vet });
-    this.resetAppointmentTimeOptions(this.state.apptDate, vet.value, this.state.apptLength.value)
+    this.resetAppointmentTimeOptions(this.state.apptDate, vet.value, this.state.apptLength.value);
   };
 
   onChangeApptLength = apptLength => {
     this.setState({ apptLength });
+    this.resetAppointmentTimeOptions(this.state.apptDate, this.state.vet.value, apptLength.value);
   };
 
   onChangeApptTime = apptTime => {
     this.setState({ apptTime });
   };
 
-  resetAppointmentTimeOptions(date, vetId, lengthofAppt) {
+  resetAppointmentTimeOptions(date, vetId, lengthofAppt, savedStartTime) {
     let self = this;
 
-    axios.post('/api/Appointment/GetAppointmentTimeOptions', { VetId: vetId, Date: date, lengthOfAppt: lengthofAppt })
-      .then(result => {
-        var apptTimeOptions = result.data.map((item) => { return { value: item, label: item.hours + ":" + item.minutes.toString().padStart(2, '0') } });
+    if (date && vetId && lengthofAppt) // Only get the appointment lengths if all of the parameters are non-null
+      return axios.post('/api/Appointment/GetAppointmentTimeOptions', { VetId: vetId, Date: date, lengthOfAppt: lengthofAppt })
+        .then(result => {
+          var apptTimeOptions = result.data.map((item) => { return { value: item, label: item.hours + ":" + item.minutes.toString().padStart(2, '0') } });
 
-        self.setState({
-          apptTimeOptions
-        });
+          if (savedStartTime) { //Add the new item so that the array is still sorted
+            apptTimeOptions.splice(
+              _.sortedIndexBy(apptTimeOptions, savedStartTime,
+                function (o) {
+                  return o.label.toString().padStart(5, '0');
+                }
+              ), 0, savedStartTime);
+          }
 
-        if (apptTimeOptions.length !== 0) // Choose the first option if there is one
           self.setState({
-            apptTime: apptTimeOptions[0]
+            apptTimeOptions
           });
-      });
+
+          self.setState({
+            apptTime: null // Unselect whatever value was previously selected since it might not be available anymore
+          });
+        });
   };
 
   onChangeDate = date => {
@@ -97,9 +109,10 @@ export class AddAppointment extends Component {
   }
 
   LoadData() {
-    let defaultDate = this.setDefaultDate();
     try {
       let self = this;
+      const { id } = this.props.match.params;
+      this.setState({ apptId: id });
 
       function getVets() {
         return axios.get('/api/Vet/GetAllVets')
@@ -119,22 +132,49 @@ export class AddAppointment extends Component {
           petsResult = petsResult.data.map((item) => ({ value: item.id, label: item.name }));
           vetsResult = vetsResult.data.map((item) => ({ value: item.id, label: item.firstName + ' ' + item.lastName }));
           apptLengthsResult = apptLengthsResult.data.map((item) => ({ value: item.lengthInMinutes, label: item.lengthInMinutes }));
-          let defaultPet = petsResult.length !== 0 ? petsResult[0] : null;
-          let defaultVet = vetsResult.length !== 0 ? vetsResult[0] : null;
-          let defaultApptLength = apptLengthsResult.length !== 0 ? apptLengthsResult[0] : null;
 
           self.setState({
             petsList: petsResult,
             vetsList: vetsResult,
-            apptLengthOptions: apptLengthsResult,
-            pet: defaultPet,
-            vet: defaultVet,
-            apptLength: defaultApptLength,
+            apptLengthOptions: apptLengthsResult
           });
 
-          if (defaultVet != null && defaultApptLength != null)
-            self.resetAppointmentTimeOptions(defaultDate, defaultVet.value, defaultApptLength.value);
+          if (id) // Load the existing appointment if it's an edit
+          {
+            self.setState({ title: "Edit Appointment" });
+            axios.get("api/Appointment/GetAppointmentById/" + id).then(response => {
+              const appt = response.data;
+              const startTime = new Date(appt.startTime);
+              const endTime = new Date(appt.endTime);
+              const apptLength = getMinutes(new Date(endTime - startTime));
+              const time = getHours(startTime) + ":" + getMinutes(startTime).toString().padStart(2, '0');
+              const apptDate = startOfDay(startTime);
 
+              self.resetAppointmentTimeOptions(apptDate, appt.vetId, apptLength, { value: { hours: getHours(startTime), minutes: getMinutes(startTime) }, label: time }).then(response => {
+                self.setState({
+                  apptDate: apptDate,
+                  pet: self.state.petsList.find(x => x.value === appt.petId),
+                  vet: self.state.vetsList.find(x => x.value === appt.vetId),
+                  apptLength: self.state.apptLengthOptions.find(x => x.value === apptLength),
+                  apptTime: self.state.apptTimeOptions.find(x => x.label === time)
+                })
+              });
+            })
+          }
+          else // Adding a new appointment
+          {
+            let defaultDate = self.setDefaultDate();
+            let defaultPet = petsResult.length !== 0 ? petsResult[0] : null;
+            let defaultVet = vetsResult.length !== 0 ? vetsResult[0] : null;
+            let defaultApptLength = apptLengthsResult.length !== 0 ? apptLengthsResult[0] : null;
+
+            self.setState({
+              pet: defaultPet,
+              vet: defaultVet,
+              apptLength: defaultApptLength,
+            });
+            return self.resetAppointmentTimeOptions(defaultDate, defaultVet.value, defaultApptLength.value);
+          }
         }));
     } catch (error) {
       console.log(error);
@@ -149,29 +189,37 @@ export class AddAppointment extends Component {
     let startTime = addHours(addMinutes(selectedDate, time.minutes), time.hours); // Add the selected time to the selected date
     let endTime = addMinutes(startTime, self.state.apptLength.value); // Add the appt length to the start time to get the end time
 
-    axios.post('/api/Appointment/AddAppointment', {
+    let appointment = {
       PetId: self.state.pet.value,
       VetId: self.state.vet.value,
       StartTime: startTime,
       EndTime: endTime,
-    })
-      .then(result => {
-        return axios.post('/api/Appointment/GetAppointmentTimeOptions', { VetId: self.state.vet.value, Date: self.state.apptDate, lengthOfAppt: self.state.apptLength.value });
-      })
-      .then(result => {
-        self.apptTimeOptions = result.data.map((item) => { return { value: item, text: item } });
+    }
 
-        if (self.apptTimeOptions.length !== 0)
-          self.state.apptTime = self.apptTimeOptions[0].value;
+    if (this.state.apptId) {
+      axios.put('/api/Appointment/UpdateAppointment/' + this.state.apptId, appointment)
+        .then(result => {
+          self.props.history.push('/');
+        });
+    }
+    else {
+      axios.post('/api/Appointment/AddAppointment', appointment)
+        .then(result => {
+          self.props.history.push('/');
+        });
+    }
+  }
 
-        self.props.history.push('/allAppointments');
-      });
+  formComplete = () => {
+    let state = this.state;
+
+    return !(state.apptDate && state.pet && state.vet && state.apptLength && state.apptTime)
   }
 
   render() {
     return (
       <div className="trip-form">
-        <h3>Add New Appointment</h3>
+        <h3>{this.state.title}</h3>
         <form onSubmit={this.onSubmit}>
           <FormGroup>
             <Label for="speciesSelect">Select a Date:</Label>
@@ -228,7 +276,7 @@ export class AddAppointment extends Component {
             </Select>
           </FormGroup>
           <div className="form-group">
-            <input type="submit" value="Submit" className="btn btn-primary" />
+            <input type="submit" value="Submit" className="btn btn-primary" disabled={this.formComplete()} />
           </div>
         </form>
       </div>

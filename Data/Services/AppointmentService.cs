@@ -49,12 +49,15 @@ namespace ReactPetClinic.Data
 
         public long AddAppointment(Appointment appointment)
         {
-            return  _db.Insert(appointment);
+            return _db.Insert(appointment);
         }
-        public void UpdateAppointment(Appointment appointment)
+
+        public void UpdateAppointment(int id, Appointment appointment)
         {
+            appointment.Id = id;
             _db.Update(appointment);
         }
+
         public void DeleteAppointment(Appointment appointment)
         {
             _db.Delete(appointment);

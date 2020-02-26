@@ -29,7 +29,7 @@ export class AddPet extends Component {
         }
 
         axios.post("api/Pet/AddPet", pet).then(result => {
-            history.push('/allAppointments');
+            history.push('/');
         });
     }
 

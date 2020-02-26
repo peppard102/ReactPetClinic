@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import { Form, FormGroup, Label, Input } from 'reactstrap';
 
@@ -30,7 +30,7 @@ export class AddVet extends Component {
 
     onSubmit(e) {
         e.preventDefault();
-        const {history} = this.props;
+        const { history } = this.props;
 
         let vet = {
             firstName: this.state.firstName,
@@ -38,7 +38,7 @@ export class AddVet extends Component {
         }
 
         axios.post("api/Vet/AddVet", vet).then(result => {
-            history.push('/allAppointments');
+            history.push('/');
         });
     }
 
@@ -54,8 +54,8 @@ export class AddVet extends Component {
                     <FormGroup>
                         <Label for="lastName">Last Name</Label>
                         <Input type="text" name="lastName" id="lastName" placeholder="Enter Last Name" value={this.state.lastName} onChange={this.onChangeLastName} />
-                    </FormGroup><br/>
-                    <input type="submit" value="Add Vet" className="btn btn-primary"/>
+                    </FormGroup><br />
+                    <input type="submit" value="Add Vet" className="btn btn-primary" />
                 </Form>
             </div>
         )

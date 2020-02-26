@@ -65,12 +65,16 @@ namespace ReactPetClinic.Controllers
             return value;
         }
 
-        // PUT: api/Appointment/UpdateAppointment
-        [HttpPut("[action]")]
-        public Appointment UpdateAppointment([FromBody]Appointment value)
+        [HttpPut("UpdateAppointment/{id}")]
+        public IActionResult UpdateAppointment(int id, [FromBody]Appointment value)
         {
-            _service.UpdateAppointment(value);
-            return value;
+            if (value != null)
+            {
+                value.StartTime = value.StartTime.ToLocalTime();
+                value.EndTime = value.EndTime.ToLocalTime();
+                _service.UpdateAppointment(id, value);
+            }
+            return Ok(value);
         }
 
         // DELETE: api/Appointment/DeleteAppointment/5

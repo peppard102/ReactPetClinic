@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 
 export class Delete extends Component {
@@ -12,12 +12,12 @@ export class Delete extends Component {
             name: "",
             description: "",
             dateStarted: null,
-            dateCompleted: null 
+            dateCompleted: null
         }
     }
 
     componentDidMount() {
-        const {id} = this.props.match.params;
+        const { id } = this.props.match.params;
         axios.get("api/Trips/GetTripById/" + id).then(trip => {
             const response = trip.data;
             this.setState({
@@ -30,16 +30,16 @@ export class Delete extends Component {
     }
 
     onCancel(e) {
-        const {history} = this.props;
-        history.push('/allAppointments');
+        const { history } = this.props;
+        history.push('/');
     }
 
     onConfirmation(e) {
-        const {id} = this.props.match.params;
-        const {history} = this.props;
-        
+        const { id } = this.props.match.params;
+        const { history } = this.props;
+
         axios.delete("api/Trips/DeleteTrip/" + id).then(result => {
-            history.push('/allAppointments');
+            history.push('/');
         })
     }
 

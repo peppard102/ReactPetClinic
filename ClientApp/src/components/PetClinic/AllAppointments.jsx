@@ -57,6 +57,15 @@ export class AllAppointments extends Component {
         this.setState(prevState => ({ showDeleteModal: !prevState.showDeleteModal }));
     }
 
+    isPast = (startTime) => {
+        return new Date(startTime) < new Date();
+    }
+
+    onClickUpdate = (apptId) => {
+        this.state.selectedApptId = apptId;
+        this.props.history.push('/editAppointment/' + apptId);
+    }
+
     renderAllAppointmentsTable(appointments) {
         return (
             <table className="table table-striped">
@@ -81,10 +90,10 @@ export class AllAppointments extends Component {
                                 <td>{new Date(appointment.endTime).toLocaleString()}</td>
                                 <td>
                                     <div className="form-group">
-                                        <button onClick={() => this.onTripUpdate(appointment.id)} className="btn btn-success mr-2">
+                                        <button onClick={() => this.onClickUpdate(appointment.id)} className="btn btn-success mr-2" disabled={this.isPast(appointment.startTime)}>
                                             Update
                                         </button>
-                                        <button onClick={() => this.toggleDeleteModal(appointment.id)} className="btn btn-danger">
+                                        <button onClick={() => this.toggleDeleteModal(appointment.id)} className="btn btn-danger" disabled={this.isPast(appointment.startTime)}>
                                             Delete
                                         </button>
                                     </div>
