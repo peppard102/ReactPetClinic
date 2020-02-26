@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ReactPetClinic.Data;
 using System.Threading.Tasks;
+using System;
 
 namespace ReactPetClinic.Controllers
 {
@@ -17,40 +18,75 @@ namespace ReactPetClinic.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> AddPet([FromBody]Pet pet)
         {
-            var result = await _service.AddPet(pet);
-            return Ok(result);
+            try
+            {
+                var result = await _service.AddPet(pet);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET: api/Pet/GetAllPets
         [HttpGet("[action]")]
         public async Task<IActionResult> GetAllPets()
         {
-            var result = await _service.GetAllPets();
-            return Ok(result);
+            try
+            {
+                var result = await _service.GetAllPets();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // GET: api/Pet/GetPetById/5
         [HttpGet("[action]/{id}")]
         public async Task<IActionResult> GetPetById(int id)
         {
-            var result = await _service.GetPetById(id);
-            return Ok(result);
+            try
+            {
+                var result = await _service.GetPetById(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT: api/Pet/UpdatePet
         [HttpPut("[action]")]
         public async Task<IActionResult> UpdatePet([FromBody]Pet value)
         {
-            var result = await _service.UpdatePet(value);
-            return Ok(result);
+            try
+            {
+                var result = await _service.UpdatePet(value);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE: api/Pet/DeletePet/5
         [HttpDelete("[action]/{id}")]
         public async Task<IActionResult> DeletePet(int id)
         {
-            var result = await _service.DeletePet(new Pet { Id = id });
-            return Ok(result);
+            try
+            {
+                var result = await _service.DeletePet(new Pet { Id = id });
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
