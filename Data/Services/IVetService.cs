@@ -1,13 +1,14 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ReactPetClinic.Data
 {
     public interface IVetService
     {
-        long AddVet(Vet vet);
-        Vet GetVetById(int id);
-        List<Vet> GetAllVets();
-        void UpdateVet(Vet Vet);
-        void DeleteVet(Vet Vet);
+        Task<long> AddVet(Vet vet);
+        Task<Vet> GetVetById(int id);
+        Task<IEnumerable<Vet>> GetAllVets();
+        Task<bool> UpdateVet(Vet Vet);
+        Task<bool> DeleteVet(Vet Vet);
     }
 }

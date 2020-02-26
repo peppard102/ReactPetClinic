@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Data;
 using Dapper.Contrib.Extensions;
 using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
 
 namespace ReactPetClinic.Data
 {
@@ -18,27 +19,27 @@ namespace ReactPetClinic.Data
             _db = db;
         }
 
-        public long AddVet(Vet vet)
+        public async Task<long> AddVet(Vet vet)
         {
-            return  _db.Insert(vet);
+            return await _db.InsertAsync(vet);
         }
 
-        public Vet GetVetById(int id)
+        public async Task<Vet> GetVetById(int id)
         {
-            return _db.Get<Vet>(id);
+            return await _db.GetAsync<Vet>(id);
         }
-        public List<Vet> GetAllVets()
+        public async Task<IEnumerable<Vet>> GetAllVets()
         {
-            return _db.GetAll<Vet>().ToList();
+            return await _db.GetAllAsync<Vet>();
         }
 
-        public void UpdateVet(Vet vet)
+        public async Task<bool> UpdateVet(Vet vet)
         {
-            _db.Update(vet);
+            return await _db.UpdateAsync(vet);
         }
-        public void DeleteVet(Vet vet)
+        public async Task<bool> DeleteVet(Vet vet)
         {
-            _db.Delete(vet);
+            return await _db.DeleteAsync(vet);
         }
     }
 }

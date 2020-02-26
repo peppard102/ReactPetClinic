@@ -1,14 +1,14 @@
 using System.Collections.Generic;
-using System;
+using System.Threading.Tasks;
 
 namespace ReactPetClinic.Data
 {
     public interface IPetService
     {
-        long AddPet(Pet pet);
-        Pet GetPetById(int id);
-        List<Pet> GetAllPets();
-        void UpdatePet(Pet Pet);
-        void DeletePet(Pet Pet);
+        Task<long> AddPet(Pet pet);
+        Task<Pet> GetPetById(int id);
+        Task<IEnumerable<Pet>> GetAllPets();
+        Task<bool> UpdatePet(Pet Pet);
+        Task<bool> DeletePet(Pet Pet);
     }
 }

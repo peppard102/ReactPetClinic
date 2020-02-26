@@ -1,9 +1,8 @@
-using System;
 using Microsoft.AspNetCore.Mvc;
 using ReactPetClinic.Data;
-using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace ReactPetClinic.Controllers 
+namespace ReactPetClinic.Controllers
 {
     [Route("api/[controller]")]
     public class VetController : Controller
@@ -14,74 +13,44 @@ namespace ReactPetClinic.Controllers
             this._service = service;
         }
 
-        // POST: api/Appointment
+        // POST: api/Vet/AddVet
         [HttpPost("[action]")]
-        public IActionResult AddVet([FromBody]Vet vet)
+        public async Task<IActionResult> AddVet([FromBody]Vet vet)
         {
-            _service.AddVet(vet);
-            return Ok();
+            var result = await _service.AddVet(vet);
+            return Ok(result);
         }
 
+        // GET: api/Vet/GetAllVets
         [HttpGet("[action]")]
-        public List<Vet> GetAllVets()
+        public async Task<IActionResult> GetAllVets()
         {
-            return _service.GetAllVets();
+            var result = await _service.GetAllVets();
+            return Ok(result);
         }
 
-        // GET: api/Pet/5
+        // GET: api/Vet/GetVetById/5
         [HttpGet("[action]/{id}")]
-        public Vet GetVetById(int id)
+        public async Task<IActionResult> GetVetById(int id)
         {
-            return _service.GetVetById(id);
+            var result = await _service.GetVetById(id);
+            return Ok(result);
         }
 
-        // PUT: api/Pet
+        // PUT: api/Vet/UpdateVet
         [HttpPut("[action]")]
-        public Vet UpdateVet([FromBody]Vet value)
+        public async Task<IActionResult> UpdateVet([FromBody]Vet value)
         {
-            _service.UpdateVet(value);
-            return value;
+            var result = await _service.UpdateVet(value);
+            return Ok(result);
         }
 
-        // DELETE: api/Pet/5
+        // DELETE: api/Vet/DeleteVet/5
         [HttpDelete("[action]/{id}")]
-        public int DeleteVet(int id)
+        public async Task<IActionResult> DeleteVet(int id)
         {
-            _service.DeleteVet(new Vet { Id = id});
-            return id;
+            var result = await _service.DeleteVet(new Vet { Id = id });
+            return Ok(result);
         }
-
-        // [HttpGet("GetTripById/{id}")]
-        // public IActionResult GetTripById(int id)
-        // {
-        //     return Ok(_service.GetTripById(id));
-        // }
-
-        // [HttpPost("[action]")]
-        // public IActionResult AddTrip([FromBody]Trip trip)
-        // {
-        //     if(trip != null)
-        //     {
-        //         _service.AddTrip(trip);
-        //     }
-        //     return Ok();
-        // }
-
-        // [HttpPut("UpdateTrip/{id}")]
-        // public IActionResult UpdateTrip(int id, [FromBody]Trip trip)
-        // {
-        //     if(trip != null)
-        //     {
-        //         _service.UpdateTrip(id, trip);
-        //     }
-        //     return Ok(trip);
-        // }
-
-        // [HttpDelete("DeleteTrip/{id}")]
-        // public IActionResult DeleteTrip(int id)
-        // {
-        //     _service.DeleteTrip(id);
-        //     return Ok();
-        // }
     }
 }
