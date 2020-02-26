@@ -44,6 +44,21 @@ namespace ReactPetClinic.Controllers
             }
         }
 
+        // GET: api/Pet/GetAllSpecies
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetAllSpecies()
+        {
+            try
+            {
+                var result = await _service.GetAllSpecies();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         // GET: api/Pet/GetPetById/5
         [HttpGet("[action]/{id}")]
         public async Task<IActionResult> GetPetById(int id)

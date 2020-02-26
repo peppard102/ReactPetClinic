@@ -6,8 +6,6 @@ export class AllAppointments extends Component {
     constructor(props) {
         super(props);
 
-        this.onTripUpdate = this.onTripUpdate.bind(this);
-
         this.state = {
             appointments: [],
             loading: true,
@@ -19,12 +17,7 @@ export class AllAppointments extends Component {
     }
 
     componentDidMount() {
-        this.populateTripsData();
-    }
-
-    onTripUpdate(id) {
-        const { history } = this.props;
-        history.push('/update/' + id);
+        this.populateAppointmentData();
     }
 
     onAppointmentDelete = () => {
@@ -43,7 +36,7 @@ export class AllAppointments extends Component {
         })
     }
 
-    populateTripsData() {
+    populateAppointmentData() {
         axios.get("api/Appointment/GetAppointmentGrid").then(result => {
             const response = result.data;
             this.setState({ appointments: response, loading: false, failed: false, error: '' });
@@ -76,6 +69,8 @@ export class AllAppointments extends Component {
                         <th>Pet Name</th>
                         <th>Start Time</th>
                         <th>End Time</th>
+                        <th>Species</th>
+                        <th>Allergies</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -88,10 +83,12 @@ export class AllAppointments extends Component {
                                 <td>{appointment.petName}</td>
                                 <td>{new Date(appointment.startTime).toLocaleString()}</td>
                                 <td>{new Date(appointment.endTime).toLocaleString()}</td>
+                                <td>{appointment.speciesName}</td>
+                                <td>{appointment.allergies}</td>
                                 <td>
                                     <div className="form-group">
-                                        <button onClick={() => this.onClickUpdate(appointment.id)} className="btn btn-success mr-2" disabled={this.isPast(appointment.startTime)}>
-                                            Update
+                                        <button onClick={() => this.onClickUpdate(appointment.id)} className="btn btn-success mr-1" disabled={this.isPast(appointment.startTime)}>
+                                            Edit
                                         </button>
                                         <button onClick={() => this.toggleDeleteModal(appointment.id)} className="btn btn-danger" disabled={this.isPast(appointment.startTime)}>
                                             Delete

@@ -33,6 +33,11 @@ namespace ReactPetClinic.Data
             return await _db.GetAllAsync<Pet>();
         }
 
+        public async Task<IEnumerable<Species>> GetAllSpecies()
+        {
+            return await _db.GetAllAsync<Species>();
+        }
+
         public async Task<bool> UpdatePet(Pet pet)
         {
             return await _db.UpdateAsync(pet);

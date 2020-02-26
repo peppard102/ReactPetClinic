@@ -1,31 +1,57 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import { Form, FormGroup, Label, Input } from 'reactstrap';
+import Select from 'react-select';
 
 export class AddPet extends Component {
     constructor(props) {
         super(props);
 
-        this.onChangeName = this.onChangeName.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
-
         this.state = {
             name: '',
+            allergies: "",
+            species: null,
+            speciesList: [],
         }
     }
 
-    onChangeName(e) {
+    componentDidMount() {
+        let self = this;
+
+        axios.get('/api/Pet/GetAllSpecies').then(result => {
+            let species = result.data.map((item) => ({ value: item.speciesId, label: item.speciesName }));
+
+            self.setState({
+                speciesList: species,
+                species: species.length !== 0 ? species[0] : null
+            });
+        })
+      }
+
+    onChangeName = e => {
         this.setState({
             name: e.target.value
         });
     }
 
-    onSubmit(e) {
+    onChangeSpecies = species => {
+        this.setState({ species });
+      };
+
+    onChangeAllergies = e => {
+        this.setState({
+            allergies: e.target.value
+        });
+    }
+
+    onSubmit = e => {
         e.preventDefault();
         const { history } = this.props;
 
         let pet = {
-            name: this.state.name
+            name: this.state.name,
+            allergies: this.state.allergies,
+            speciesId: this.state.species.value
         }
 
         axios.post("api/Pet/AddPet", pet).then(result => {
@@ -44,17 +70,18 @@ export class AddPet extends Component {
                     </FormGroup>
                     <FormGroup>
                         <Label for="speciesSelect">Species:</Label>
-                        <Input type="select" name="speciesSelect" id="speciesSelect">
-                            <option>Cat</option>
-                            <option>Dog</option>
-                            <option>Bird</option>
-                            <option>Hamster</option>
-                            <option>Other</option>
-                        </Input>
+                        <Select
+                            type="select"
+                            name="speciesSelect"
+                            id="speciesSelect"
+                            value={this.state.species}
+                            onChange={this.onChangeSpecies}
+                            options={this.state.speciesList}>
+                        </Select>
                     </FormGroup>
                     <FormGroup>
                         <Label for="exampleText">Allergies:</Label>
-                        <Input type="textarea" name="text" id="exampleText" />
+                        <Input type="textarea" name="text" id="exampleText" value={this.state.allergies} onChange={this.onChangeAllergies}/>
                     </FormGroup>
                     <FormGroup tag="fieldset">
                         <legend>Vaccinations Up to Date?</legend>

@@ -2,13 +2,11 @@ using Dapper.Contrib.Extensions;
 
 namespace ReactPetClinic.Data
 {
-    [Table("Pet")] // Tell Dapper which table to use
-    public class Pet
+    [Table("Species")] // Tell Dapper which table to use
+    public class Species
     {
         [Key] // Tell Dapper that this is the primary key in the DB table
-        public int Id { get; set; }
-        public string Name { get; set; }
         public int SpeciesId { get; set; }
-        public string Allergies { get; set; }
+        public string SpeciesName { get; set; }
     }
 }
